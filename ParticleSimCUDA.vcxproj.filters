@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="kernels">
+      <UniqueIdentifier>{6a39cd9f-fdf3-493c-a7ce-8b6a1c3d0cf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="kernelHeaders">
+      <UniqueIdentifier>{32178032-63df-4327-b2c0-ed91a7cef594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SDL2Drawer">
+      <UniqueIdentifier>{9999d8f3-4268-43c6-a279-22dbbd6e0242}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="particleKernel.cu">
+      <Filter>kernels</Filter>
+    </CudaCompile>
+    <CudaCompile Include="dataTransfer.cu">
+      <Filter>kernels</Filter>
+    </CudaCompile>
+    <CudaCompile Include="stdinclude.cu">
+      <Filter>kernels</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="particleKernel.cuh">
+      <Filter>kernelHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="stdinclude.cuh">
+      <Filter>kernelHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="sdl2Drawer.h">
+      <Filter>SDL2Drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="particleStructs.cuh">
+      <Filter>kernelHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="stdlistCU.cuh">
+      <Filter>kernelHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="dataTransfer.cuh">
+      <Filter>kernelHeaders</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="sdl2Drawer.cpp">
+      <Filter>SDL2Drawer</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+</Project>
