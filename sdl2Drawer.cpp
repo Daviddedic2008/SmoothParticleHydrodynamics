@@ -71,6 +71,14 @@ void drawParticle(const float* particle, float sz) {
     drawFilledCircle(xProjected, yProjected, radius);
 }
 
+void drawParticlePoint(const float* particle, float sz) {
+    SDL_SetRenderDrawColor(winRenderer, 255, 0, 0, 100);
+    const float xProjected = 256 - particle[0] / particle[2];
+    const float yProjected = 256 - particle[1] / particle[2];
+
+    SDL_RenderPoint(winRenderer, xProjected, yProjected);
+}
+
 void presentRenderer() {
     SDL_RenderPresent(winRenderer);
 }

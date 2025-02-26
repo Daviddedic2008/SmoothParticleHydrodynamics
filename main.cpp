@@ -2,21 +2,25 @@
 #include "sdl2Drawer.h"
 #include "dataTransfer.cuh"
 #include "particleKernel.cuh"
+#include "rng.cuh"
 
 void particleDrawLoop() {
     copyParticlesFromGPU();
     clearRenderer();
     for (int pi = 0; pi < numParticles; pi++) {
         const particlePlaceholder p = getParticle(pi);
-        drawParticle(p.pos, 10.0f);
+        drawParticlePoint(p.pos, 1.0f);
     }
     presentRenderer();
 }
 
 int main() {
     initSDL();
-
-    addParticleToDeviceArray(100.0f, 100.0f, 1.0f);
+    unsigned int seed = 0x23409204;
+    for (int p = 0; p < numParticles; p++) {
+        addParticleToDeviceArray(xorShiftf(seed) * 512 - 256, xorShiftf(seed) * 512 - 256, 1.0f);
+    }
+    initBoundingVolumes();
     while (SDLGetRunning()) {
         testGravityKernel();
         particleDrawLoop();

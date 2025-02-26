@@ -84,6 +84,16 @@ inline __host__ __device__ vec3 cross(const vec3 v1, const vec3 v2) {
 
 __device__ linkedListCU boundingBoxes[numCellsX * numCellsY * numCellsZ];
 
+__global__ void initBoundingBoxes() {
+    const int id = threadIdx.x + blockIdx.x * blockDim.x;
+
+    if (id >= numCellsX * numCellsY * numCellsZ) {
+        return;
+    }
+
+    initList(boundingBoxes[id]);
+}
+
 struct particle {
     vec3 velocity;
     vec3 pos;
@@ -95,14 +105,23 @@ struct particle {
     __device__ particle() {}
 
     inline __device__ void addParticleToBox(const int x, const int y, const int z) {
-        printf("%d %d %d\n", x, y, z);
-        const int tmpID = x + y * numCellsX + z * numCellsX * numCellsY;
+        const int tmpID = (int)((pos.x + 256) / lookupRadius) + (int)((pos.y + 256) / lookupRadius) * numCellsX + (int)(pos.z / lookupRadius) * numCellsX * numCellsY;
 
         if (boxID == tmpID) {
             return;
         }
 
-        boxID = x + y * numCellsX + z * numCellsX * numCellsY;
+        boxID = tmpID;
+        boxPos = push_backLinkedCU(boundingBoxes[boxID], *(particlePlaceholder*)this);
+    }
+
+    inline __device__ void addParticleToBoxID(const int id) {
+
+        if (boxID == id) {
+            return;
+        }
+
+        boxID = id;
         boxPos = push_backLinkedCU(boundingBoxes[boxID], *(particlePlaceholder*)this);
     }
 
@@ -110,7 +129,15 @@ struct particle {
         if (boxID == -1) {
             return;
         }
-        removeImmediateCU(boxPos);
+        removeImmediateCU(boxPos, boundingBoxes[boxID]);
         boxID = -1;
+    }
+
+    inline __device__ void recalcBox() {
+        const int tmpID = (int)((pos.x + 256)/lookupRadius) + (int)((pos.y + 256) / lookupRadius) * numCellsX + (int)(pos.z / lookupRadius) * numCellsX * numCellsY;
+        if (tmpID != boxID) {
+            removeParticleFromCurrentBox();
+            addParticleToBoxID(tmpID);
+        }
     }
 };

@@ -81,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <CudaCompile Include="dataTransfer.cu" />
+    <CudaCompile Include="rng.cu" />
     <CudaCompile Include="stdinclude.cu" />
     <CudaCompile Include="particleKernel.cu" />
   </ItemGroup>
@@ -88,6 +89,7 @@
     <ClInclude Include="dataTransfer.cuh" />
     <ClInclude Include="particleKernel.cuh" />
     <ClInclude Include="particleStructs.cuh" />
+    <ClInclude Include="rng.cuh" />
     <ClInclude Include="sdl2Drawer.h" />
     <ClInclude Include="stdinclude.cuh" />
     <ClInclude Include="stdlistCU.cuh" />

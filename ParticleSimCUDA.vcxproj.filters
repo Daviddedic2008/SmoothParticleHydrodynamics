@@ -21,6 +21,9 @@
     <CudaCompile Include="stdinclude.cu">
       <Filter>kernels</Filter>
     </CudaCompile>
+    <CudaCompile Include="rng.cu">
+      <Filter>kernels</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="particleKernel.cuh">
@@ -39,6 +42,9 @@
       <Filter>kernelHeaders</Filter>
     </ClInclude>
     <ClInclude Include="dataTransfer.cuh">
+      <Filter>kernelHeaders</Filter>
+    </ClInclude>
+    <ClInclude Include="rng.cuh">
       <Filter>kernelHeaders</Filter>
     </ClInclude>
   </ItemGroup>

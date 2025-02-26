@@ -15,14 +15,25 @@
 #define magnitude2D(vec2_a) (sqrtf(dot2D(vec2_a, vec2_a)))
 #define particlePlaceholderEquals(p1, p2) (p1.pos[0] == p2.pos[0] && p1.pos[1] == p2.pos[1] && p1.pos[2] == p2.pos[2] && p1.vel[0] == p2.vel[0] && p1.vel[1] == p2.vel[1] && p1.vel[2] == p2.vel[2])
 
+#define printLastErr() printf("%s\n", cudaGetErrorString(cudaGetLastError()))
+
 #define fov 0.1f
 
-#define numCellsX 10
-#define numCellsY 10
-#define numCellsZ 10
-#define boxLength 512 / (float)numCellsX
+#define dampingFactor 0.8f
+
+#define numCellsX 20
+#define numCellsY 20
+#define numCellsZ 20
+#define boxLength (512 / (float)numCellsX)
 #define lookupRadius boxLength
-#define numParticles 1
+
+#define inVolume(vec) (vec.x > -256 && vec.y > -256 && vec.x < 256 && vec.y < 256) // is particle in total volume
+
+#define inXBounds(vec) (vec.x > -256 && vec.x < 256)
+#define inYBounds(vec) (vec.y > -256 && vec.y < 256)
+#define inZBounds(vec) (vec.z > -256 && vec.z < 256)
+
+#define numParticles 5000
 
 #define smoothingFunction(x) __fmul_rn(fabsCU(x)-1, __fmul_rn(fabsCU(x)-1, fabsCU(x)-1))
 
@@ -35,7 +46,11 @@ inline __device__ float fabsCU(const float a) {
 struct particlePlaceholder {
     float vel[3];
     float pos[3];
+    int id;
+    void* a;
+    void* b;
 };
+
 #ifndef ARR
 extern __device__ particlePlaceholder particles[numParticles];
 #endif
