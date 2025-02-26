@@ -13,13 +13,15 @@
 #define matrix2D_eval(float_a , float_b, float_c, float_d) (float_a*float_d - float_b*float_c)
 #define magnitude(vec3_a) (sqrtf(dot(vec3_a, vec3_a)))
 #define magnitude2D(vec2_a) (sqrtf(dot2D(vec2_a, vec2_a)))
+#define particlePlaceholderEquals(p1, p2) (p1.pos[0] == p2.pos[0] && p1.pos[1] == p2.pos[1] && p1.pos[2] == p2.pos[2] && p1.vel[0] == p2.vel[0] && p1.vel[1] == p2.vel[1] && p1.vel[2] == p2.vel[2])
 
 #define fov 0.1f
 
-#define numCellsX 100
-#define numCellsY 100
-#define numCellsZ 100
+#define numCellsX 10
+#define numCellsY 10
+#define numCellsZ 10
 #define boxLength 512 / (float)numCellsX
+#define lookupRadius boxLength
 #define numParticles 1
 
 #define smoothingFunction(x) __fmul_rn(fabsCU(x)-1, __fmul_rn(fabsCU(x)-1, fabsCU(x)-1))

@@ -82,17 +82,35 @@ inline __host__ __device__ vec3 cross(const vec3 v1, const vec3 v2) {
     return ret;
 }
 
-__device__ vectorCU boundingBoxes[numCellsX * numCellsY * numCellsZ];
+__device__ linkedListCU boundingBoxes[numCellsX * numCellsY * numCellsZ];
 
 struct particle {
     vec3 velocity;
     vec3 pos;
+    int boxID = -1;
+    iteratorCU boxPos;
 
     __device__ particle(const vec3 pos) : pos(pos), velocity(vec3(0.0f, 0.0f, 0.0f)) {}
 
     __device__ particle() {}
 
     inline __device__ void addParticleToBox(const int x, const int y, const int z) {
-        push_backCU(boundingBoxes[x + y * numCellsX + z * numCellsX * numCellsY], *(particlePlaceholder*)this);
+        printf("%d %d %d\n", x, y, z);
+        const int tmpID = x + y * numCellsX + z * numCellsX * numCellsY;
+
+        if (boxID == tmpID) {
+            return;
+        }
+
+        boxID = x + y * numCellsX + z * numCellsX * numCellsY;
+        boxPos = push_backLinkedCU(boundingBoxes[boxID], *(particlePlaceholder*)this);
+    }
+
+    inline __device__ void removeParticleFromCurrentBox() {
+        if (boxID == -1) {
+            return;
+        }
+        removeImmediateCU(boxPos);
+        boxID = -1;
     }
 };
