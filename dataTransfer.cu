@@ -1,5 +1,18 @@
 #include "dataTransfer.cuh"
 
+inline __host__ __device__ unsigned int xorShift(unsigned int state) {
+	state ^= state << 13;
+	state ^= state >> 17;
+	state ^= state << 5;
+
+	return state;
+}
+
+inline __host__ __device__ float xorShiftf(unsigned int& state) {
+	return ((state = xorShift(state)) % 1001) / 1000.0f;
+}
+
+
 particlePlaceholder cpuParticleArr[numParticles];
 
 void copyParticlesFromGPU() {
@@ -13,8 +26,10 @@ __global__ void addParticleToParticleArr(const float x, const float y, const flo
 	p.pos[0] = x;
 	p.pos[1] = y;
 	p.pos[2] = z;
-
-	p.vel[0] = 0.0f;
+	
+	unsigned int tmpseed = (int)x * (int)y;
+	float velx = xorShiftf(tmpseed);
+	p.vel[0] = (velx - 0.5f)/20.0f;
 	p.vel[1] = 0.0f;
 	p.vel[2] = 0.0f;
 

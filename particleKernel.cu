@@ -46,7 +46,7 @@ __global__ void updateParticleKernel() {
 	addForceToPos(id);
 
 	// move particle to new bounding box if needed
-	recalculateBoundingBox(id);
+	//recalculateBoundingBox(id);
 }
 
 void initBoundingVolumes() {

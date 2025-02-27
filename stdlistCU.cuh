@@ -25,11 +25,14 @@ inline __device__ void takeList(const linkedListCU ls) {
 	while (atomicCAS(ls.mutex, 0, 1) != 0) {
 		;
 	}
-	atomicExch(ls.mutex, 0);
+}
+
+inline __device__ bool attemptTake(const linkedListCU ls) {
+	return atomicCAS(ls.mutex, 0, 1) == 0;
 }
 
 inline __device__ void releaseList(const linkedListCU ls) {
-	atomicExch(ls.mutex, 1);
+	atomicExch(ls.mutex, 0);
 }
 
 inline __device__ void initList(linkedListCU& ls) {
@@ -38,10 +41,15 @@ inline __device__ void initList(linkedListCU& ls) {
 }
 
 inline __device__ iteratorCU getBeginningCU(const linkedListCU ls) {
-	takeList(ls);
+	bool blocked = true;
 	iteratorCU ret;
-	ret.curn = ((node*)ls.firstNode);
-	releaseList(ls);
+	while (blocked) {
+		if (attemptTake(ls)) {
+			ret.curn = ((node*)ls.firstNode);
+			releaseList(ls);
+			blocked = false;
+		}
+	}
 
 	return ret;
 }
@@ -57,23 +65,30 @@ inline __device__ particlePlaceholder getIteratorValueCU(const iteratorCU iter) 
 }
 
 inline __device__ iteratorCU push_backLinkedCU(linkedListCU& ls, const particlePlaceholder p) {
-	takeList(ls);
-	if (ls.size == 0) {
-		ls.firstNode = new node;
-		((node*)ls.firstNode)->val = p;
-		ls.curNode = ls.firstNode;
-		releaseList(ls);
-		return getBeginningCU(ls);
-	}
-	((node*)ls.curNode)->nextVal = new node;
-
-	ls.curNode = ((node*)ls.curNode)->nextVal;
-	((node*)ls.curNode)->val = p;
-
+	bool blocked = true;
 	iteratorCU ret;
-	ret.curn = ((node*)ls.curNode)->nextVal;
-	ret.prevn = ((node*)ls.curNode);
-	releaseList(ls);
+	while (blocked) {
+		if (attemptTake(ls)) {
+			if (ls.size == 0) {
+				ls.firstNode = new node;
+				((node*)ls.firstNode)->val = p;
+				ls.curNode = ls.firstNode;
+				ret = getBeginningCU(ls);
+				goto releasePushLinked;
+			}
+			((node*)ls.curNode)->nextVal = new node;
+
+			ls.curNode = ((node*)ls.curNode)->nextVal;
+			((node*)ls.curNode)->val = p;
+
+
+			ret.curn = ((node*)ls.curNode)->nextVal;
+			ret.prevn = ((node*)ls.curNode);
+			releasePushLinked:
+			releaseList(ls);
+			blocked = false;
+		}
+	}
 	return ret;
 }
 
@@ -106,19 +121,23 @@ inline __device__ void removeCU(linkedListCU& ls, const particlePlaceholder p) {
 inline __device__ void removeImmediateCU(iteratorCU& iter, linkedListCU ls) {
 	// iterator skips to next element, if there is one.
 
-	takeList(ls);
+	bool blocked = true;
 	if (iter.curn == nullptr) { releaseList(ls); return; }
-
-	if (iter.prevn == nullptr) {
-		delete iter.curn;
-		iter.curn = nullptr;
-		releaseList(ls);
-		return;
+	
+	while (blocked) {
+		if (attemptTake(ls)) {
+			if (iter.prevn == nullptr) {
+				delete iter.curn;
+				iter.curn = nullptr;
+				releaseList(ls);
+				return;
+			}
+			iter.prevn->nextVal = iter.curn->nextVal;
+			delete iter.curn;
+			iter.curn = iter.prevn->nextVal;
+			releaseList(ls);
+		}
 	}
-	iter.prevn->nextVal = iter.curn->nextVal;
-	delete iter.curn;
-	iter.curn = iter.prevn->nextVal;
-	releaseList(ls);
 }
 
 inline __device__ void addCU(linkedListCU& ls, const int index, const particlePlaceholder val) {
