@@ -34,7 +34,7 @@
 #define inYBounds(vec) (vec.y > -256 && vec.y < 256)
 #define inZBounds(vec) (vec.z > -256 && vec.z < 256)
 
-#define numParticles 128 // must be power of 2 for bitonic sort
+#define numParticles 131072 // must be power of 2 for bitonic sort
 
 #define smoothingFunction(x) __fmul_rn(fabsCU(x)-1, __fmul_rn(fabsCU(x)-1, fabsCU(x)-1))
 

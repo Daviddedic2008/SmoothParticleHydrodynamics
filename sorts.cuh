@@ -22,7 +22,8 @@ __global__ void fillCountArr(const unsigned char bytePlace) {
 		return;
 	}
 
-	countArr[getByte(particles[tid].id, bytePlace)]++;
+	atomicAdd(&countArr[getByte(particles[tid].id, bytePlace)], 1);
+
 }
 
 __global__ void cumAddCountArr() {
@@ -41,7 +42,9 @@ __global__ void sortUsingCountArr(const unsigned char bytePlace) {
 
 	const particlePlaceholder p = particles[id];
 
-	particlesBuffer[--countArr[getByte(p.id, bytePlace)]] = p;
+	int index = atomicSub(&countArr[getByte(p.id, bytePlace)], 1);
+	particlesBuffer[index-1] = p;
+
 }
 
 __device__ int numSwaps[2];
@@ -83,6 +86,12 @@ __global__ void sortEven() {
 	}
 }
 
+__global__ void sortMergeOdd(const unsigned char iteration) {
+	const int threadId = threadIdx.x + blockIdx.x * blockDim.x;
+
+
+}
+
 
 bool isSortedEvenOdd() {
 	int ret[2];
@@ -108,6 +117,14 @@ __global__ void copyFromParticleBuffer() {
 	}
 
 	particles[id] = particlesBuffer[id];
+}
+
+void radix() {
+	initArr << <1, 256 >> > ();
+	fillCountArr << <512, numParticles / 512 + 1 >> > (0);
+	cumAddCountArr << <1, 1 >> > ();
+	sortUsingCountArr << <512, numParticles / 512 + 1 >> > (0);
+	copyFromParticleBuffer << <512, numParticles / 512 + 1 >> > ();
 }
 
 int medianOfThree(particlePlaceholder arr[], int low, int high) {

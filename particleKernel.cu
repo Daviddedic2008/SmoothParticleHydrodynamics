@@ -57,7 +57,8 @@ void initBoundingVolumes() {
 
 void updateLoop() {
 	updateParticleKernel << <512, numParticles / 512 + 1 >> > ();
-	sortEvenOdd();
+	//sortEvenOdd();
+	radix();
 	copyParticlesFromGPU();
 	//quicksort(cpuParticleArr, 0 ,numParticles-1);
 	//sendParticlesToGPU();
