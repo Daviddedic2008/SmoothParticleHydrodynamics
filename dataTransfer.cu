@@ -19,6 +19,10 @@ void copyParticlesFromGPU() {
 	cudaMemcpyFromSymbol(cpuParticleArr, particles, sizeof(cpuParticleArr));
 }
 
+void sendParticlesToGPU() {
+	cudaMemcpyToSymbol(particles, cpuParticleArr, sizeof(cpuParticleArr));
+}
+
 __device__ int currentParticleIndex = 0;
 
 __global__ void addParticleToParticleArr(const float x, const float y, const float z) {
@@ -29,7 +33,7 @@ __global__ void addParticleToParticleArr(const float x, const float y, const flo
 	
 	unsigned int tmpseed = (int)x * (int)y;
 	float velx = xorShiftf(tmpseed);
-	p.vel[0] = (velx - 0.5f)/20.0f;
+	p.vel[0] = (velx - 0.5f)/5.0f;
 	p.vel[1] = 0.0f;
 	p.vel[2] = 0.0f;
 

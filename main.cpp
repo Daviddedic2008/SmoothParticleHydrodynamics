@@ -5,11 +5,11 @@
 #include "rng.cuh"
 
 void particleDrawLoop() {
-    copyParticlesFromGPU();
     clearRenderer();
     for (int pi = 0; pi < numParticles; pi++) {
         const particlePlaceholder p = getParticle(pi);
-        drawParticlePoint(p.pos, 1.0f);
+        drawParticlePoint(p.pos, 2.0f);
+        //printf("%d\n", p.id);
     }
     presentRenderer();
 }
@@ -21,8 +21,9 @@ int main() {
         addParticleToDeviceArray(xorShiftf(seed) * 512 - 256, xorShiftf(seed) * 512 - 256, 1.0f);
     }
     initBoundingVolumes();
+    
     while (SDLGetRunning()) {
-        testGravityKernel();
+        updateLoop();
         particleDrawLoop();
     }
     return 0;

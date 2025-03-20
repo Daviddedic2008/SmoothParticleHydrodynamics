@@ -1,5 +1,5 @@
 #pragma once;
 
-void testGravityKernel();
-
 void initBoundingVolumes();
+
+void updateLoop();

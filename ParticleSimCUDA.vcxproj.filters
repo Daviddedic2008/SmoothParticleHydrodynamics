@@ -47,6 +47,9 @@
     <ClInclude Include="rng.cuh">
       <Filter>kernelHeaders</Filter>
     </ClInclude>
+    <ClInclude Include="sorts.cuh">
+      <Filter>kernelHeaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="sdl2Drawer.cpp">

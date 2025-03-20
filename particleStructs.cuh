@@ -115,29 +115,10 @@ struct particle {
         boxPos = push_backLinkedCU(boundingBoxes[boxID], *(particlePlaceholder*)this);
     }
 
-    inline __device__ void addParticleToBoxID(const int id) {
-
-        if (boxID == id) {
-            return;
-        }
-
-        boxID = id;
-        boxPos = push_backLinkedCU(boundingBoxes[boxID], *(particlePlaceholder*)this);
-    }
-
-    inline __device__ void removeParticleFromCurrentBox() {
-        if (boxID == -1) {
-            return;
-        }
-        removeImmediateCU(boxPos, boundingBoxes[boxID]);
-        boxID = -1;
-    }
-
     inline __device__ void recalcBox() {
         const int tmpID = (int)((pos.x + 256)/lookupRadius) + (int)((pos.y + 256) / lookupRadius) * numCellsX + (int)(pos.z / lookupRadius) * numCellsX * numCellsY;
         if (tmpID != boxID) {
-            removeParticleFromCurrentBox();
-            addParticleToBoxID(tmpID);
+            boxID = tmpID % 256;
         }
     }
 };

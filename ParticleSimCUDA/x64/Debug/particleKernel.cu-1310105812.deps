@@ -115,7 +115,9 @@ C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include\texture_types.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include\vector_functions.h
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include\vector_functions.hpp
 C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\include\vector_types.h
+C:\Users\david\OneDrive\Documents\ParticleSimCUDA\dataTransfer.cuh
 C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cuh
 C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleStructs.cuh
+C:\Users\david\OneDrive\Documents\ParticleSimCUDA\sorts.cuh
 C:\Users\david\OneDrive\Documents\ParticleSimCUDA\stdinclude.cuh
 C:\Users\david\OneDrive\Documents\ParticleSimCUDA\stdlistCU.cuh

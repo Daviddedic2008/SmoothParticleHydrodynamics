@@ -7,6 +7,7 @@
 #include <vector>
 #include <list>
 
+
 #define dot(vec3_v1, vec3_v2) (vec3_v1.x * vec3_v2.x + vec3_v1.y * vec3_v2.y + vec3_v1.z * vec3_v2.z)
 #define dot_fastmath(vec3_v1, vec3_v2) __fmaf_rn(vec3_v1.x, vec3_v2.x,__fmaf_rn(vec3_v1.y, vec3_v2.y,vec3_v1.z * vec3_v2.z))
 #define dot2D(vec2_v1, vec2_v2) (vec2_v1.x * vec2_v2.x + vec2_v1.y * vec2_v2.y)
@@ -33,7 +34,7 @@
 #define inYBounds(vec) (vec.y > -256 && vec.y < 256)
 #define inZBounds(vec) (vec.z > -256 && vec.z < 256)
 
-#define numParticles 50
+#define numParticles 128 // must be power of 2 for bitonic sort
 
 #define smoothingFunction(x) __fmul_rn(fabsCU(x)-1, __fmul_rn(fabsCU(x)-1, fabsCU(x)-1))
 
@@ -53,4 +54,5 @@ struct particlePlaceholder {
 
 #ifndef ARR
 extern __device__ particlePlaceholder particles[numParticles];
+extern __device__ particlePlaceholder particlesBuffer[numParticles];
 #endif

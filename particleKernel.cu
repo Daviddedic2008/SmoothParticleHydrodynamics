@@ -1,5 +1,7 @@
 ﻿#include "particleKernel.cuh"
 #include "stdinclude.cuh"
+#include "sorts.cuh"
+#include "dataTransfer.cuh"
 
 #include "particleStructs.cuh"
 
@@ -46,13 +48,17 @@ __global__ void updateParticleKernel() {
 	addForceToPos(id);
 
 	// move particle to new bounding box if needed
-	//recalculateBoundingBox(id);
+	recalculateBoundingBox(id);
 }
 
 void initBoundingVolumes() {
 	initBoundingBoxes << <512, numCellsX* numCellsY* numCellsZ / 512 + 1 >> > ();
 }
 
-void testGravityKernel() {
+void updateLoop() {
 	updateParticleKernel << <512, numParticles / 512 + 1 >> > ();
+	sortEvenOdd();
+	copyParticlesFromGPU();
+	//quicksort(cpuParticleArr, 0 ,numParticles-1);
+	//sendParticlesToGPU();
 }
