@@ -20,11 +20,11 @@
 
 #define fov 0.1f
 
-#define dampingFactor 0.8f
+#define dampingFactor 0.5f
 
-#define numCellsX 20
-#define numCellsY 20
-#define numCellsZ 20
+#define numCellsX 16
+#define numCellsY 16
+#define numCellsZ 16
 #define boxLength (512 / (float)numCellsX)
 #define lookupRadius boxLength
 
@@ -34,13 +34,14 @@
 #define inYBounds(vec) (vec.y > -256 && vec.y < 256)
 #define inZBounds(vec) (vec.z > -256 && vec.z < 256)
 
-#define numParticles 131072 // must be power of 2 for bitonic sort
+#define numParticles 10000 // must be power of 2 for bitonic sort
+#define targetDensity 10.0f
 
-#define smoothingFunction(x) __fmul_rn(fabsCU(x)-1, __fmul_rn(fabsCU(x)-1, fabsCU(x)-1))
+#define smoothingFunction(x) (1 - 1 / __fsqrt_rn(lookupRadius) * __fsqrt_rn(x)) 
 
 #define gravityConst -0.0002f
 
-inline __device__ float fabsCU(const float a) {
+inline __device__ float fabsCU(const float a) { 
 	return a && 0x7FFFFFFF;
 }
 
@@ -56,3 +57,13 @@ struct particlePlaceholder {
 extern __device__ particlePlaceholder particles[numParticles];
 extern __device__ particlePlaceholder particlesBuffer[numParticles];
 #endif
+
+__device__ constexpr float constexprSqrt(float value, float approx = 1.0f) {
+    return (approx * approx >= value - 0.00001f && approx * approx <= value + 0.00001f)
+        ? approx
+        : constexprSqrt(value, 0.5f * (approx + value / approx));
+}
+
+constexpr __constant__ float sqrtLookup = constexprSqrt(lookupRadius);
+
+constexpr __constant__ float lookupVolume = 2 * lookupRadius * lookupRadius * 3.141592653f / 3; // got using wolfram

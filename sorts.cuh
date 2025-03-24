@@ -2,16 +2,19 @@
 
 
 // radix sort based on bytes instead of digits from least significant to most significant
-inline __device__ unsigned char getByte(const int inputNum, const unsigned char bytePlace) {
-	return ((unsigned char*)&inputNum)[bytePlace];
+inline __device__ uint16_t getByte(const int inputNum, const unsigned char bytePlace) {
+	return ((uint16_t*)&inputNum)[bytePlace];
 }
 
-__device__ int countArr[256];
+__device__ int countArr[65536];
+
+__device__ int frozenCountArr[65536];
 
 __global__ void initArr() {
 	const int id = threadIdx.x + blockIdx.x * blockDim.x;
 	if (id < 256) {
 		countArr[id] = 0;
+		frozenCountArr[id] = 0;
 	}
 }
 
@@ -24,11 +27,14 @@ __global__ void fillCountArr(const unsigned char bytePlace) {
 
 	atomicAdd(&countArr[getByte(particles[tid].id, bytePlace)], 1);
 
+	atomicAdd(&frozenCountArr[getByte(particles[tid].id, bytePlace)], 1);
+
 }
 
 __global__ void cumAddCountArr() {
 	for (int i = 1; i < 256; i++) {
 		countArr[i] += countArr[i - 1];
+		frozenCountArr[i] += frozenCountArr[i - 1];
 	}
 }
 
@@ -120,7 +126,7 @@ __global__ void copyFromParticleBuffer() {
 }
 
 void radix() {
-	initArr << <1, 256 >> > ();
+	initArr << <256, 256 >> > ();
 	fillCountArr << <512, numParticles / 512 + 1 >> > (0);
 	cumAddCountArr << <1, 1 >> > ();
 	sortUsingCountArr << <512, numParticles / 512 + 1 >> > (0);
@@ -166,3 +172,11 @@ void quicksort(particlePlaceholder arr[], int low, int high) {
 		}
 	}
 }
+
+typedef struct {
+	int startIndex, endIndex;
+}startEnd;
+
+/*startEnd getParticlesInBox(const int boxId) {
+	;
+}*/

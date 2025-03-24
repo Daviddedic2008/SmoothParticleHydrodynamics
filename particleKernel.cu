@@ -5,13 +5,37 @@
 
 #include "particleStructs.cuh"
 
-inline __device__ void applyGravity(particle& p) {
-	p.velocity.y += gravityConst;
+inline __device__ float approximatePointDensity(const particle p) {
+	const int xo = p.boxID % numCellsY;
+	const int yo = p.boxID / numCellsY;
+	float density = 0.0f;
+	// once found, must divide by volume under smoothing function(to make smoothing radius irrelevant)
+
+	#pragma unroll
+	for (char i = 0, x = -1, y = -1; i < 9; i++, x++, y += (i % 3 == 0), x -= (x == 1) * 2) {
+		if (xo + x >= 0 && xo + x < numCellsX && yo + y >= 0 && yo + y < numCellsY) {
+			const int id = xo + x + (yo + y) * numCellsX;
+			const int pid_start = (id > 0) ? frozenCountArr[id - 1] : 0;
+
+			#pragma unroll
+			for (int pi = pid_start; pi < frozenCountArr[id]; pi++) {
+				const vec3 posDiff = p.pos - ((particle*)particles)[pi].pos;
+
+				const float tmp = smoothingFunction(magnitude(posDiff));
+
+				density += (tmp > 0) * tmp;
+			}
+		}
+	}
+
+	return density / lookupVolume; // volume under smoothing function
 }
 
 inline __device__ void applyForcesParticle(const int id) {
 	if (id >= numParticles) { return; }
-	applyGravity(((particle*)particles)[id]);
+	particle& p = ((particle*)particles)[id];
+	p.velocity.y += gravityConst;
+	approximatePointDensity(p);
 }
 
 inline __device__ void addForceToPos(const int id) {
@@ -22,7 +46,6 @@ inline __device__ void addForceToPos(const int id) {
 	const unsigned char iny = inYBounds(newPos);
 	const unsigned char inz = inZBounds(newPos);
 	const unsigned char inv = inx & iny & inz;
-
 	p.velocity.x = p.velocity.x * (-2 * !inx + 1) * (!inx * dampingFactor + inx);
 	p.velocity.y = p.velocity.y * (-2 * !iny + 1) * (!iny * dampingFactor + iny);
 	p.velocity.z = p.velocity.z * (-2 * !inz + 1) * (!inz * dampingFactor + inz);

@@ -25,6 +25,7 @@ void initSDL() {
     if (winRenderer == nullptr) {
         std::cerr << "createRenderer error: " << SDL_GetError() << std::endl;
     }
+
 }
 
 void endSDL() {
@@ -50,6 +51,7 @@ SDL_Event event;
 bool isRunning = true;
 
 void clearRenderer() {
+
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_EVENT_QUIT) {
             isRunning = false;
@@ -81,4 +83,5 @@ void drawParticlePoint(const float* particle, float sz) {
 
 void presentRenderer() {
     SDL_RenderPresent(winRenderer);
+
 }
