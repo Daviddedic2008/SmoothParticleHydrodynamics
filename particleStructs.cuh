@@ -97,6 +97,7 @@ __global__ void initBoundingBoxes() {
 struct particle {
     vec3 velocity;
     vec3 pos;
+    float density;
     int boxID = -1;
     iteratorCU boxPos;
 

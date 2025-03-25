@@ -32,28 +32,39 @@ int main() {
     cudaEventCreate(&stop);
 
     int frame = 0;
+    float ct = 0.0f;
     while (SDLGetRunning()) {
-        cudaEventRecord(start, 0);
-        updateLoop();
-        cudaEventRecord(stop, 0);
-        cudaEventSynchronize(stop);
-        float milliseconds = 0;
-        cudaEventElapsedTime(&milliseconds, start, stop);
-        cudaEventRecord(start, 0);
-        particleDrawLoop();
-        cudaEventRecord(stop);
-        cudaEventSynchronize(stop);
-        float milliseconds2 = 0;
-        cudaEventElapsedTime(&milliseconds2, start, stop);
-
-        frame++;
+        float milliseconds = 0, milliseconds2 = 0;
         if (frame % 100 == 0) {
-            printf("\rcomputation: %fms    drawing: %fms", milliseconds, milliseconds2);
+            cudaEventRecord(start, 0);
         }
         
+        updateLoop();
+        if (frame % 100 == 0) {
+            cudaEventRecord(stop, 0);
+            cudaEventSynchronize(stop);
+            cudaEventElapsedTime(&milliseconds, start, stop);
+            cudaEventRecord(start, 0);
+        }
+        particleDrawLoop();
+        if (frame % 100 == 0) {
+            cudaEventRecord(stop);
+            cudaEventSynchronize(stop);
+            cudaEventElapsedTime(&milliseconds2, start, stop);
+        }
 
+        
+        
+        if (frame % 100 == 0) {
+            printf("\rcomputation: %fms    drawing: %fms", milliseconds, milliseconds2);
+            ct += milliseconds + milliseconds2;
+        }
+        
+        frame++;
     }
 
-    printf("\nexit\n");
+    printf("\n\nclosed\n");
+    frame /= 100;
+    printf("\navg. frametime: %fms\n", ct / frame);
     return 0;
 }

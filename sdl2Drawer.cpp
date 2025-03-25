@@ -14,7 +14,7 @@ void initSDL() {
         std::cout << "SDL_Init Video Error!" << std::endl;
     }
 
-    win = SDL_CreateWindow("SDL3 Window", 512, 512, SDL_WINDOW_RESIZABLE);
+    win = SDL_CreateWindow("SDL3 Window", 512, 512, SDL_WINDOW_ALWAYS_ON_TOP);
     if (win == nullptr) {
         std::cerr << "createWindow error: " << SDL_GetError() << std::endl;
         SDL_Quit();

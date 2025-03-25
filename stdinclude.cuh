@@ -22,9 +22,9 @@
 
 #define dampingFactor 0.5f
 
-#define numCellsX 16
-#define numCellsY 16
-#define numCellsZ 16
+#define numCellsX 30
+#define numCellsY 30
+#define numCellsZ 1
 #define boxLength (512 / (float)numCellsX)
 #define lookupRadius boxLength
 
@@ -35,11 +35,13 @@
 #define inZBounds(vec) (vec.z > -256 && vec.z < 256)
 
 #define numParticles 10000 // must be power of 2 for bitonic sort
-#define targetDensity 10.0f
+#define targetDensity 0.025f
 
-#define smoothingFunction(x) (1 - 1 / __fsqrt_rn(lookupRadius) * __fsqrt_rn(x)) 
+#define smoothingFunction(x) (1 - 1 / sqrtLookup * __fsqrt_rn(x)) 
 
-#define gravityConst -0.0002f
+#define smoothingFunctionDerivative(x) (-1.0f / 2.0f / sqrtLookup / __fsqrt_rn(x)) // wohoo wolfram
+
+#define gravityConst -0.0f
 
 inline __device__ float fabsCU(const float a) { 
 	return a && 0x7FFFFFFF;
@@ -48,6 +50,7 @@ inline __device__ float fabsCU(const float a) {
 struct particlePlaceholder {
     float vel[3];
     float pos[3];
+    float density;
     int id;
     void* a;
     void* b;
