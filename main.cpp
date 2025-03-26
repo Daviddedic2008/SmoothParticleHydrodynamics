@@ -8,7 +8,7 @@ void particleDrawLoop() {
     clearRenderer();
     for (int pi = 0; pi < numParticles; pi++) {
         const particlePlaceholder p = getParticle(pi);
-        drawParticlePoint(p.pos, 2.0f);
+        drawParticlePoint(p.pos, 2.0f, p.density*12);
         //printf("%d\n", p.id);
     }
     presentRenderer();
@@ -20,7 +20,7 @@ int main() {
     printf("%d bounding boxes\n", numCellsX * numCellsY * numCellsZ);
     printf("initializing...\n");
     initSDL();
-    unsigned int seed = 0x23409204;
+    unsigned int seed = 0x1;
     for (int p = 0; p < numParticles; p++) {
         addParticleToDeviceArray(xorShiftf(seed) * 512 - 256, xorShiftf(seed) * 512 - 256, 1.0f);
     }
