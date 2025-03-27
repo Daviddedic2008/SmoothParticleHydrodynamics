@@ -35,13 +35,13 @@
 #define inZBounds(vec) (vec.z > -256 && vec.z < 256)
 
 #define numParticles 10000 // must be power of 2 for bitonic sort
-#define targetDensity 0.1f
+#define targetDensity 0.025f
 
 #define smoothingFunction(x) (1 - 1 / sqrtLookup * __fsqrt_rn(x)) 
 
 #define smoothingFunctionDerivative(x) (-1.0f / 2.0f / sqrtLookup / __fsqrt_rn(x)) // wohoo wolfram
 
-#define gravityConst -0.001f
+#define gravityConst -0.0f
 
 inline __device__ float fabsCU(const float a) { 
 	return a && 0x7FFFFFFF;
