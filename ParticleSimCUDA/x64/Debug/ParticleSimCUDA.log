@@ -23,7 +23,7 @@ C:\Users\david\OneDrive\Documents\ParticleSimCUDA\stdlistCU.cuh(2): warning #14-
     #pragma once;
                 ^
   
-C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(32): warning #20050-D: inline qualifier ignored for "__global__" function
+C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(37): warning #20050-D: inline qualifier ignored for "__global__" function
     inline __declspec(__global__) void applyPressureForce() {
                       ^
   
@@ -57,20 +57,24 @@ C:\Users\david\OneDrive\Documents\ParticleSimCUDA\stdlistCU.cuh(212): warning #9
     }
     ^
   
-C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(32): warning #20050-D: inline qualifier ignored for "__global__" function
+C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(14): warning #20058-D: the #pragma unroll must precede a loop
+    #pragma unroll
+            ^
+  
+C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(37): warning #20050-D: inline qualifier ignored for "__global__" function
     inline __declspec(__global__) void applyPressureForce() {
                       ^
   
-C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(89): warning #940-D: missing return statement at end of non-void function "getDensityGradient"
+C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(94): warning #940-D: missing return statement at end of non-void function "getDensityGradient"
     }
     ^
   
-C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(116): warning #177-D: variable "p" was declared but never referenced
+C:\Users\david\OneDrive\Documents\ParticleSimCUDA\particleKernel.cu(121): warning #177-D: variable "p" was declared but never referenced
     	const particle p = ((particle*)particles)[id];
     	               ^
   
   particleKernel.cu
-  tmpxft_000070e4_00000000-7_particleKernel.cudafe1.cpp
+  tmpxft_0000633c_00000000-7_particleKernel.cudafe1.cpp
   
   C:\Users\david\OneDrive\Documents\ParticleSimCUDA>"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\bin\nvcc.exe" -dlink  -o ParticleSimCUDA\x64\Debug\ParticleSimCUDA.device-link.obj -Xcompiler "/EHsc /W3 /nologo /Od /Zi /RTC1 /MDd " -Xcompiler "/FdParticleSimCUDA\x64\Debug\vc143.pdb" -L"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\bin/crt" -L"C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.5\lib\x64" cudart_static.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib SDL3.lib SDL3_test.lib cudart.lib cudadevrt.lib  -gencode=arch=compute_52,code=sm_52 -G  C:\Users\david\OneDrive\Documents\ParticleSimCUDA\ParticleSimCUDA\x64\Debug\dataTransfer.cu.obj C:\Users\david\OneDrive\Documents\ParticleSimCUDA\ParticleSimCUDA\x64\Debug\rng.cu.obj C:\Users\david\OneDrive\Documents\ParticleSimCUDA\ParticleSimCUDA\x64\Debug\stdinclude.cu.obj C:\Users\david\OneDrive\Documents\ParticleSimCUDA\ParticleSimCUDA\x64\Debug\particleKernel.cu.obj 
   cudart_static.lib

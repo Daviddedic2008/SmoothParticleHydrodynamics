@@ -20,10 +20,10 @@
 
 #define fov 0.1f
 
-#define dampingFactor 0.5f
+#define dampingFactor 0.8f
 
-#define numCellsX 30
-#define numCellsY 30
+#define numCellsX 16
+#define numCellsY 16
 #define numCellsZ 1
 #define boxLength (512 / (float)numCellsX)
 #define lookupRadius boxLength
@@ -34,14 +34,14 @@
 #define inYBounds(vec) (vec.y > -256 && vec.y < 256)
 #define inZBounds(vec) (vec.z > -256 && vec.z < 256)
 
-#define numParticles 10000 // must be power of 2 for bitonic sort
+#define numParticles 1 // must be power of 2 if bitonic sorting
 #define targetDensity 0.025f
 
 #define smoothingFunction(x) (1 - 1 / sqrtLookup * __fsqrt_rn(x)) 
 
 #define smoothingFunctionDerivative(x) (-1.0f / 2.0f / sqrtLookup / __fsqrt_rn(x)) // wohoo wolfram
 
-#define gravityConst -0.0f
+#define gravityConst -0.005f
 
 inline __device__ float fabsCU(const float a) { 
 	return a && 0x7FFFFFFF;

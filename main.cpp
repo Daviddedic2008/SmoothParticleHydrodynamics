@@ -8,7 +8,7 @@ void particleDrawLoop() {
     clearRenderer();
     for (int pi = 0; pi < numParticles; pi++) {
         const particlePlaceholder p = getParticle(pi);
-        drawParticlePoint(p.pos, 2.0f);
+        drawParticlePoint(p.pos, 2.0f, fmin(5*p.density, 1.0f));
         //printf("%d\n", p.id);
     }
     presentRenderer();

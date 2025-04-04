@@ -11,11 +11,15 @@ inline __device__ float approximatePointDensity(const particle p) {
 	float density = 0.0f;
 	// once found, must divide by volume under smoothing function(to make smoothing radius irrelevant)
 
-	for (char i = 0, x = -1, y = -1; i < 9; i++, x++, y += (i % 3) == 0, x -= (x == 1) * 2) {
+#pragma unroll
+
+	printf("%d %d %f %f : ", xo, yo, p.pos.x, p.pos.y);
+	for (char i = 0, x = -1, y = -1; i < 9; i++, x++, y += x == 2, x -= (x == 2) * 2) {
 		if ((xo + x) >= 0 && (xo + x) < numCellsX && (yo + y) >= 0 && (yo + y) < numCellsY) {
 			const int id = xo + x + (yo + y) * numCellsX;
 
-			#pragma unroll
+			printf(" :: %d %d :: ", xo+x, yo+y);
+			
 			for (int pi = (id > 0) ? frozenCountArr[id - 1] : 0; pi < frozenCountArr[id]; pi++) {
 				const vec3 posDiff = p.pos - ((particle*)particles)[pi].pos;
 
@@ -25,6 +29,7 @@ inline __device__ float approximatePointDensity(const particle p) {
 			}
 		}
 	}
+	printf("\n");
 
 	return density / lookupVolume; // volume under smoothing function
 }
@@ -138,7 +143,7 @@ void initBoundingVolumes() {
 void updateLoop() {
 	updateParticleKernel << <512, numParticles / 512 + 1 >> > ();
 
-	applyPressureForce << <512, numParticles / 512 + 1 >> > ();
+	//applyPressureForce << <512, numParticles / 512 + 1 >> > ();
 	
 	//sortEvenOdd();
 	radix();

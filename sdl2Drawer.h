@@ -13,4 +13,4 @@ bool SDLGetRunning();
 
 void drawParticle(const float* particles, float sz);
 
-void drawParticlePoint(const float* particle, float sz);
+void drawParticlePoint(const float* particle, float sz, float clr);
